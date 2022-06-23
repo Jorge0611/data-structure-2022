@@ -18,6 +18,8 @@
  **/
 
 #include <iostream>
+#include <valarray>
+
 using namespace std;
 
 // NUMBERS DICTIONARY
@@ -26,8 +28,24 @@ string twoDigits[10] = {"Diez", "Once", "Doce", "Trece", "Catorce", "Quince", "D
 string tensDigits[9] = {"", "Veinte", "Treinta", "Cuarenta", "Cincuenta", "Sesenta", "Setenta", "Ochenta", "Noventa"};
 string threeDigits[9] = {"Ciento", "Doscientos", "Trecientos", "Cuatrocientos", "Quinientos", "Seiscientos", "Setecientos", "Ochocientos", "Novecientos"};
 
+// remove comma from string
+string removeComma(string str)
+{
+    string word = "";
+    int countNumbers;
+    for (char i : str)
+    {
+        if (i != ',')
+        {
+            word += i;
+            countNumbers++;
+        }
+    }
+    return word;
+}
+
 // parse from number to words numbers of three digits
-string parseNumberToWords(int number, string suffix)
+string parseNumberToWords(int number, const string &suffix)
 {
     if (number == 0)
         return "";
@@ -41,11 +59,11 @@ string parseNumberToWords(int number, string suffix)
     if (number > 99 && number <= 999)
     {
         int numIndex = number / 100;
-        result += threeDigits[numIndex - 1];
-        number % 100 == 0 ? result = suffix + " " : result += " " + parseNumberToWords(number % 100, suffix);
+        result += threeDigits[numIndex - 1] + " ";
+        number % 100 == 0 ? result += suffix + " " : result += " " + parseNumberToWords(number % 100, suffix);
         return result;
     }
-        // two digits divider
+    // two digits divider
     else if (number > 19 && number <= 99)
     {
         int numIndex = number / 10;
@@ -53,12 +71,12 @@ string parseNumberToWords(int number, string suffix)
         number % 10 == 0 ? result += suffix + " " : result += " y " + parseNumberToWords(number % 10, suffix);
         return result;
     }
-        // range from 10 to 19 divider
+    // range from 10 to 19 divider
     else if (number >= 10 && number < 20)
     {
         return twoDigits[number - 10] + " " + suffix + " ";
     }
-        // one digit divider
+    // one digit divider
     else if (number < 10)
     {
         if (!suffix.empty() && oneDigit[number - 1] == "Uno")
@@ -121,11 +139,46 @@ string numberToWords(double _number)
 
 int main()
 {
-    double insertedNumber;
-    cout << "Enter a number: ";
-    cin >> insertedNumber;
-    cout << numberToWords(insertedNumber) << endl;
+
+    //    cout << "Enter a number: ";
+    //    cin >> insertedNumber;
+    //    cout << numberToWords(insertedNumber) << endl;
+
+    //    cout << "Enter a number with commas: ";
+    //    cin >> insertedNumberString;
+    //    insertedNumber = stod(removeComma(insertedNumberString));
+    //    cout << numberToWords(insertedNumber) << endl;
+
+    bool continuar = true;
+
+    while (continuar)
+    {
+        double insertedNumber;
+        string insertedNumberString;
+        int option;
+        cout << endl
+             << "Conversor de numero a texto\nSeleccione una opcion:\n1 - Numero entero\n2 - Numero con comas\n3 - Cerrar" << endl;
+        cin >> option;
+
+        switch (option)
+        {
+        case 1:
+            cout << "Enter a number: ";
+            cin >> insertedNumber;
+            cout << numberToWords(insertedNumber) << endl;
+            break;
+        case 2:
+            cout << "Enter a number with commas: ";
+            cin >> insertedNumberString;
+            insertedNumber = stod(removeComma(insertedNumberString));
+            cout << numberToWords(insertedNumber) << endl;
+            break;
+        case 3:
+            continuar = false;
+            break;
+        default:
+            cout << "Opcion no valida.";
+        }
+    }
     return 0;
 }
-
-#pragma clang diagnostic pop
